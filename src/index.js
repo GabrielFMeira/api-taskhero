@@ -4,6 +4,14 @@ const api = express();
 const routers = require('./routers');
 const db = require('./models');
 
+require('dotenv').config();
+
+console.log({
+  DB_USER: process.env.DB_USER,
+  DB_PASS: process.env.DB_PASSWORD,
+  DB_NAME: process.env.DB_NAME
+});
+
 api.use(express.json());
 api.use(routers);
 

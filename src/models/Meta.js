@@ -1,18 +1,21 @@
 const { DataTypes, Model } = require('sequelize');
 const seq = require('../db.js');
 const StatusEnum = require('../enums/StatusEnum.js');
-const PrioridadeEnum = require('../enums/PrioridadeEnum.js');
 
-class Tarefa extends Model {
+class Meta extends Model {
     static associate(models) {
-        this.belongsTo(models.Meta, {
+        this.belongsTo(models.Usuario, {
+            foreignKey: "usuario_id",
+            as: "usuario"
+        });
+        this.hasMany(models.Tarefa, {
             foreignKey: "meta_id",
-            as: "meta"
+            as: "tarefas"
         });
     }
 }
 
-Tarefa.init({
+Meta.init({
     titulo: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -21,20 +24,20 @@ Tarefa.init({
         type: DataTypes.TEXT,
         allowNull: true,
     },
-    data_limite: {
+    data_inicio: {
+        type: DataTypes.DATE,
+    },
+    data_fim: {
         type: DataTypes.DATE,
     },
     status: {
         type: DataTypes.ENUM(...Object.values(StatusEnum))
-    },
-    prioridade: {
-        type: DataTypes.ENUM(...Object.values(PrioridadeEnum))
     }
 }, {
-  sequelize: seq,
-  modelName: 'Tarefa',
-  schema: 'public',
-  tableName: 'tarefas'
+    sequelize: seq,
+    modelName: 'Meta',
+    schema: 'public',
+    tableName: 'metas'
 });
 
-module.exports = Tarefa;
+module.exports = Meta;
