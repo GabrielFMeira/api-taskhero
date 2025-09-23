@@ -2,7 +2,9 @@ const StatusEnum = Object.freeze({
     PENDENTE: "PENDENTE",
     BLOQUEADO: "BLOQUEADO",
     EM_ANDAMENTO: "EM_ANDAMENTO",
-    CONCLUIDO: "CONCLUIDO"
+    EXPIRADO: "EXPIRADO",
+    CONCLUIDO: "CONCLUIDO",
+    CONCLUIDO_COM_ATRASO: "CONCLUIDO_COM_ATRASO"
 });
 
 module.exports = StatusEnum;
