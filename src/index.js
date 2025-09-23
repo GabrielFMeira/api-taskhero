@@ -2,17 +2,17 @@ const express = require('express');
 const api = express();
 
 const routers = require('./routers');
-const seq = require('./db.js');
+const db = require('./models');
 
 api.use(express.json());
 api.use(routers);
 
 async function start() {
   try {
-    await seq.authenticate();
+    await db.seq.authenticate();
     console.log('Banco conectado com sucesso');
 
-    await seq.sync();
+    await db.seq.sync(); 
     console.log('Tabelas sincronizadas');
 
     api.listen(8080, () => {
