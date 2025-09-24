@@ -1,5 +1,5 @@
-const { DataTypes, Model } = require('sequelize');
-const seq = require('../db.js');
+import { DataTypes, Model } from 'sequelize';
+import seq from '../db.js';
 
 class Usuario extends Model {
     static associate(models) {
@@ -35,4 +35,4 @@ Usuario.init({
   tableName: 'usuarios'
 });
 
-module.exports = Usuario;
+export default Usuario;

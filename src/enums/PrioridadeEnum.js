@@ -4,4 +4,4 @@ const PrioridadeEnum = Object.freeze({
     ALTA: "ALTA"
 });
 
-module.exports = PrioridadeEnum;
+export default PrioridadeEnum;

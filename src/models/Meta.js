@@ -1,6 +1,6 @@
-const { DataTypes, Model } = require('sequelize');
-const seq = require('../db.js');
-const StatusEnum = require('../enums/StatusEnum.js');
+import { DataTypes, Model } from 'sequelize';
+import seq from '../db.js';
+import StatusEnum from '../enums/StatusEnum.js';
 
 class Meta extends Model {
     static associate(models) {
@@ -40,4 +40,4 @@ Meta.init({
     tableName: 'metas'
 });
 
-module.exports = Meta;
+export default Meta;

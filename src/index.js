@@ -1,10 +1,10 @@
-const express = require('express');
+import express from 'express';
+import routers from './routers/index.js';
+import db from './models/index.js';
+import dotenv from 'dotenv';
+
+dotenv.config();
 const api = express();
-
-const routers = require('./routers');
-const db = require('./models');
-
-require('dotenv').config();
 
 console.log({
   DB_USER: process.env.DB_USER,
