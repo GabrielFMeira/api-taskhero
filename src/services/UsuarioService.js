@@ -2,10 +2,7 @@ import Usuario from '../models/Usuario.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import AuthenticatedUserDTO from '../dto/AuthenticatedUserDTO.js'
-
-//TODO: colocar isso em um .env
-const JWT_SECRET = 'ksbflkno7u7985perij9*)Y&(';
-const SALT_ROUNDS = 10;
+import {JWT_SECRET, SALT_ROUNDS} from '../middlewares/Auth.js';
 
 export default class UsuarioService {
     async register(createUserDTO) {
