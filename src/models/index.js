@@ -22,7 +22,6 @@ for (const file of files) {
   db[ModelClass.name] = ModelClass;
 }
 
-// chama associate se existir
 Object.keys(db).forEach((modelName) => {
   if (db[modelName].associate) {
     db[modelName].associate(db);
