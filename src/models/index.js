@@ -1,23 +1,26 @@
-const fs = require("fs");
-const path = require("path");
-const { Sequelize } = require("sequelize");
-const seq = require("../db");
+import fs from 'fs';
+import path from 'path';
+import Sequelize from 'sequelize';
+import seq from '../db.js'
+import { fileURLToPath, pathToFileURL } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const basename = path.basename(__filename);
 
 const db = {};
 
-fs.readdirSync(__dirname)
-  .filter((file) => {
-    return (
-      file.indexOf(".") !== 0 &&
-      file !== basename &&
-      file.slice(-3) === ".js"
-    );
-  })
-  .forEach((file) => {
-    const model = require(path.join(__dirname, file));
-    db[model.name] = model;
-  });
+const files = fs.readdirSync(__dirname).filter(
+  (file) => file.indexOf('.') !== 0 && file !== basename && file.slice(-3) === '.js'
+);
+
+for (const file of files) {
+  const modelModule = await import(pathToFileURL(path.join(__dirname, file)).href);
+  const ModelClass = modelModule.default;
+
+  db[ModelClass.name] = ModelClass;
+}
 
 Object.keys(db).forEach((modelName) => {
   if (db[modelName].associate) {
@@ -28,4 +31,4 @@ Object.keys(db).forEach((modelName) => {
 db.seq = seq;
 db.Sequelize = Sequelize;
 
-module.exports = db;
+export default db;

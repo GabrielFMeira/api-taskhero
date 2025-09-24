@@ -1,7 +1,7 @@
-const { DataTypes, Model } = require('sequelize');
-const seq = require('../db.js');
-const StatusEnum = require('../enums/StatusEnum.js');
-const PrioridadeEnum = require('../enums/PrioridadeEnum.js');
+import { DataTypes, Model } from 'sequelize';
+import seq from '../db.js';
+import StatusEnum from '../enums/StatusEnum.js';
+import PrioridadeEnum from '../enums/PrioridadeEnum.js';
 
 class Tarefa extends Model {
     static associate(models) {
@@ -37,4 +37,4 @@ Tarefa.init({
   tableName: 'tarefas'
 });
 
-module.exports = Tarefa;
+export default Tarefa;

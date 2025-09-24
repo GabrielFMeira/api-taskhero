@@ -7,4 +7,4 @@ const StatusEnum = Object.freeze({
     CONCLUIDO_COM_ATRASO: "CONCLUIDO_COM_ATRASO"
 });
 
-module.exports = StatusEnum;
+export default StatusEnum;

@@ -1,4 +1,4 @@
-const Sequelize = require('sequelize');
+import Sequelize from 'sequelize';
 
 //TODO: colocar a senha em um .env
 const seq = new Sequelize('taskhero', 'postgres', '12345', {
@@ -6,4 +6,4 @@ const seq = new Sequelize('taskhero', 'postgres', '12345', {
     dialect: 'postgres'
 });
 
-module.exports = seq;
+export default seq;
