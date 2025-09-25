@@ -28,10 +28,8 @@ export default class UsuarioService {
 
     async login(userLoginDTO) {
         const user = await this.#findUserByEmail(userLoginDTO.email);
-        if (!user) throw new Error('Usuário inexistente!');
-
         let isPasswordValid = await this.#verifyPassword(userLoginDTO.senha, user.senha);
-        if (!isPasswordValid) throw new Error('Email ou senha incorretos!');
+        if (!isPasswordValid || !user) throw new Error('Email ou senha incorretos!');
 
         const token = this.#generateToken(user);
 
