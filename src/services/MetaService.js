@@ -5,7 +5,7 @@ import ObjectUtils from '../utils/ObjectUtils.js';
 export default class MetaService{
     async create(createMetaDTO, payload){
         const user = await ObjectUtils.extractUserFromPayload(payload);
-        const meta = await Meta.create({
+        await Meta.create({
             titulo: createMetaDTO.titulo,
             descricao: createMetaDTO.descricao,
             data_inicio: createMetaDTO.data_inicio,

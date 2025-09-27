@@ -4,7 +4,7 @@ const metaService = new MetaService();
 
 async function createMeta(req, res) {
     try {
-        let createdMeta = await metaService.create(req.body);
+        let createdMeta = await metaService.create(req.body, req.user);
         return res.status(200).json({
             data: createdMeta
         });
