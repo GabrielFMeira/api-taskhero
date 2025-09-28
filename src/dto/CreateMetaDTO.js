@@ -5,5 +5,4 @@ class CreateMetaDTO{
         this.data_inicio = data_inicio;
         this.data_fim = data_fim;
     }
-
 }
