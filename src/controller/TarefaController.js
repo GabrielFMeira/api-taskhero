@@ -5,7 +5,6 @@ const tarefaService = new TarefaService();
 
 async function createTask(req, res) { 
     try {
-        console.log('Chegou no controller')
         const { metaId } = req.params;
         const payload = req.payload; 
         const requestBody = req.body;
