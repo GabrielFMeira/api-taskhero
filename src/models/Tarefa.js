@@ -28,9 +28,15 @@ Tarefa.init({
         type: DataTypes.ENUM(...Object.values(StatusEnum))
     },
     prioridade: {
-        type: DataTypes.ENUM(...Object.values(PrioridadeEnum))
-    }
-}, {
+        type: DataTypes.ENUM(...Object.values(PrioridadeEnum)),
+        allowNull: false
+    },
+    meta_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
+}, 
+{
   sequelize: seq,
   modelName: 'Tarefa',
   schema: 'public',
