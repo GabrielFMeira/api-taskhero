@@ -1,7 +1,6 @@
 import Usuario from '../models/Usuario.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import AuthenticatedUserDTO from '../dto/AuthenticatedUserDTO.js'
 import {JWT_SECRET, SALT_ROUNDS} from '../middlewares/Auth.js';
 
 export default class UsuarioService {
@@ -43,12 +42,12 @@ export default class UsuarioService {
     }
 
     #createReturnDTO(user, token) {
-        return new AuthenticatedUserDTO({
+        return {
             token: token,
             nome: user.nome,
             email: user.email,
             level: user.level
-        });
+        };
     }
 
     #verifyPassword(plainPassword, hashedPassword) {

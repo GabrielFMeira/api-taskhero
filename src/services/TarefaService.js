@@ -1,9 +1,8 @@
 import Tarefa from '../models/Tarefa.js'
 import StatusEnum from '../enums/StatusEnum.js';
-import ObjectUtils from '../utils/ObjectUtils.js';
 
 export default class TarefaService{
-    async create(metaId, tasksDataArray, payload){ 
+    async create(metaId, tasksDataArray){ 
         const tasksToCreate = tasksDataArray.map(taskDTO => ({
             titulo: taskDTO.titulo,
             descricao: taskDTO.descricao,
