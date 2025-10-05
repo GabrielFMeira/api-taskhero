@@ -4,7 +4,7 @@ import {validateToken} from "../middlewares/Auth.js";
 
 const routes = express.Router();
 
-routes.use(validateToken)
-routes.post('/:metaId/create', TarefaController.createTask)
+routes.use(validateToken);
+routes.post('/:metaId/create', TarefaController.createTask);
 
 export default routes;

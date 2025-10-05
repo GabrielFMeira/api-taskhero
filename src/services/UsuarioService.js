@@ -35,6 +35,10 @@ export default class UsuarioService {
         return this.#createReturnDTO(user, token);
     }
 
+    async resetPassword(passwordResetDTO) {
+        //TODO
+    }
+
     #findUserByEmail(email) {
         return Usuario.findOne({
             where: {email: email}
