@@ -6,12 +6,6 @@ import dotenv from 'dotenv';
 dotenv.config();
 const api = express();
 
-console.log({
-  DB_USER: process.env.DB_USER,
-  DB_PASS: process.env.DB_PASSWORD,
-  DB_NAME: process.env.DB_NAME
-});
-
 api.use(express.json());
 api.use(routers);
 
@@ -20,7 +14,7 @@ async function start() {
     await db.seq.authenticate();
     console.log('Banco conectado com sucesso');
 
-    await db.seq.sync(); 
+    await db.seq.sync({alter: true}); 
     console.log('Tabelas sincronizadas');
 
     api.listen(8080, () => {

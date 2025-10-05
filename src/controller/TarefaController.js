@@ -1,5 +1,4 @@
 import TarefaService from '../services/TarefaService.js';
-import CreateTaskDTO from '../dto/CreateTaskDTO.js';
 
 const tarefaService = new TarefaService();
 

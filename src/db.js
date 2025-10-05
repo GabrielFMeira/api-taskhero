@@ -1,8 +1,9 @@
 import Sequelize from 'sequelize';
+import dotenv from 'dotenv';
 
-//TODO: colocar a senha em um .env
-const seq = new Sequelize('taskhero', 'postgres', '12345', {
-    host: 'localhost',
+dotenv.config();
+const seq = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
+    host: process.env.DB_HOST,
     dialect: 'postgres'
 });
 

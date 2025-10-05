@@ -32,6 +32,10 @@ Meta.init({
     },
     status: {
         type: DataTypes.ENUM(...Object.values(StatusEnum))
+    },
+    notificado_expiracao: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
     }
 }, {
     sequelize: seq,
