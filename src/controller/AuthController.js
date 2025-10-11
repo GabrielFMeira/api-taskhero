@@ -30,7 +30,22 @@ async function login(req, res) {
     }
 }
 
+async function resetPassword(req, res) {
+    try {
+        await usuarioService.resetPassword(req.body);
+        return res.status(200).json({
+            message: 'Senha atualizada com sucesso!'
+        });
+    } catch (err) {
+        res.status(400).json({
+            status: 400,
+            message: err.message
+        });
+    }
+}
+
 export default {
     register,
-    login
+    login,
+    resetPassword
 };
