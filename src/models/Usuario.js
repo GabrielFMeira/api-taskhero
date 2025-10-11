@@ -5,7 +5,8 @@ class Usuario extends Model {
     static associate(models) {
     this.hasMany(models.Meta, {
       foreignKey: "usuario_id",
-      as: "metas"
+      as: "metas",
+      onDelete: 'CASCADE'
     });
   }
 }

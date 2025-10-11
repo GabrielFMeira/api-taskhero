@@ -15,4 +15,23 @@ async function createMeta(req, res) {
         });
     }
 }
-export default{createMeta};
+
+const deleteMeta = async (req, res) => {
+    try {
+        const { metaId } = req.params;
+        await metaService.deleteMeta(metaId, req.user);
+        return res.status(200).json({
+            data: 'Meta excluída com sucesso!'
+        });
+    } catch (err) {
+        res.status(400).json({
+            status: 400,
+            message: err.message
+        });
+    }
+};
+
+export default {
+    createMeta, 
+    deleteMeta
+};

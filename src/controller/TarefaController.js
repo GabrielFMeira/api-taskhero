@@ -15,4 +15,21 @@ async function createTask(req, res) {
     }
 }
 
-export default {createTask};
+const deleteTarefa = async (req, res) => {
+    try {
+        const { tarefaId } = req.params;
+        const { metaId } = req.params;
+
+        await tarefaService.deleteTarefa(tarefaId, metaId);
+
+        return res.status(201).json({ message: 'Tarefa excluída com sucesso!' }); 
+    } catch (error) {
+        console.error(error);
+        return res.status(400).json({ error: error.message });
+    }
+};
+
+export default {
+    createTask,
+    deleteTarefa
+};
