@@ -32,7 +32,7 @@ async function login(req, res) {
 
 async function resetPassword(req, res) {
     try {
-        //TODO chamar o método do service
+        await usuarioService.resetPassword(req.body);
         return res.status(200).json({
             message: 'Senha atualizada com sucesso!'
         });

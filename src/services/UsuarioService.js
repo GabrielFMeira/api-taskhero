@@ -2,6 +2,7 @@ import Usuario from '../models/Usuario.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import {JWT_SECRET, SALT_ROUNDS} from '../middlewares/Auth.js';
+import { where } from 'sequelize';
 
 export default class UsuarioService {
     async register(createUserDTO) {
@@ -36,7 +37,20 @@ export default class UsuarioService {
     }
 
     async resetPassword(passwordResetDTO) {
-        //TODO
+        const user = await Usuario.findOne({
+            where: { email: passwordResetDTO.email }
+        });
+
+        if (!user) {
+            throw new Error('Usuário não encontrado');
+        }
+
+        const hashedPass = await bcrypt.hash(passwordResetDTO.password, SALT_ROUNDS);
+
+        await Usuario.update(
+            { senha: hashedPass },
+            { where: { email: user.email } }
+        );
     }
 
     #findUserByEmail(email) {
