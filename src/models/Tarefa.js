@@ -7,7 +7,8 @@ class Tarefa extends Model {
     static associate(models) {
         this.belongsTo(models.Meta, {
             foreignKey: "meta_id",
-            as: "meta"
+            as: "meta",
+            onDelete: 'CASCADE'
         });
     }
 }

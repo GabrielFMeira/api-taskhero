@@ -14,4 +14,12 @@ export default class TarefaService{
 
         await Tarefa.bulkCreate(tasksToCreate); 
     }
+
+    async deleteTarefa(tarefaId, metaId) {
+        const deletedCount = Tarefa.destroy({ where: { id: tarefaId, meta_id: metaId }});
+
+        if (deletedCount === 0) {
+            throw new Error(`Tarefa não encontrada para o id ${tarefaId}`);
+        }
+    }
 }   

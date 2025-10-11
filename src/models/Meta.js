@@ -6,11 +6,13 @@ class Meta extends Model {
     static associate(models) {
         this.belongsTo(models.Usuario, {
             foreignKey: "usuario_id",
-            as: "usuario"
+            as: "usuario",
+            onDelete: 'CASCADE'
         });
         this.hasMany(models.Tarefa, {
             foreignKey: "meta_id",
-            as: "tarefas"
+            as: "tarefas",
+            onDelete: 'CASCADE'
         });
     }
 }
