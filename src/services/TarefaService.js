@@ -38,7 +38,6 @@ export default class TarefaService{
 
     return tarefa;
 }
-
     async deleteTarefa(tarefaId, metaId) {
         const deletedCount = Tarefa.destroy({ where: { id: tarefaId, meta_id: metaId }});
 

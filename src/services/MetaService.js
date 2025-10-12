@@ -45,9 +45,5 @@ async updateMeta(metaId, updateMetaDTO, payload) {
             throw new Error(`Meta não encontrada para o id ${metaId}`);
         }
     }
-
-
-
-
 }
 

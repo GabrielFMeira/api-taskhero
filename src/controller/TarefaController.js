@@ -32,7 +32,6 @@ async function updateTarefa(req, res) {
     }
 }
 
-
 const deleteTarefa = async (req, res) => {
     try {
         const { tarefaId } = req.params;
