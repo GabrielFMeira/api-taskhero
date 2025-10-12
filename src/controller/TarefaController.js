@@ -15,6 +15,24 @@ async function createTask(req, res) {
     }
 }
 
+async function updateTarefa(req, res) {
+    try {
+        const { metaId, tarefaId } = req.params;
+        const updatedTarefa = await tarefaService.updateTarefa(tarefaId,metaId, req.body, req.user);
+
+        return res.status(200).json({
+            data: updatedTarefa,
+            message: "Tarefa atualizada com sucesso!"
+        });
+    } catch (err) {
+        res.status(400).json({
+            status: 400,
+            message: err.message
+        });
+    }
+}
+
+
 const deleteTarefa = async (req, res) => {
     try {
         const { tarefaId } = req.params;
@@ -31,5 +49,6 @@ const deleteTarefa = async (req, res) => {
 
 export default {
     createTask,
+    updateTarefa,
     deleteTarefa
 };

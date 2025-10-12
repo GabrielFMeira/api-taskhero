@@ -7,5 +7,6 @@ const routes = express.Router();
 routes.use(validateToken);
 routes.post('/create', MetaController.createMeta);
 routes.delete('/delete/:metaId', MetaController.deleteMeta);
+routes.put('/update/:metaId', MetaController.updateMeta);
 
 export default routes;

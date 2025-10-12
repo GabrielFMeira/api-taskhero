@@ -15,6 +15,22 @@ async function createMeta(req, res) {
         });
     }
 }
+async function updateMeta(req, res) {
+    try {
+        const { metaId } = req.params;
+        const updatedMeta = await metaService.updateMeta(metaId, req.body, req.user);
+
+        return res.status(200).json({
+            data: updatedMeta,
+            message: "Meta atualizada com sucesso!"
+        });
+    } catch (err) {
+        res.status(400).json({
+            status: 400,
+            message: err.message
+        });
+    }
+}
 
 const deleteMeta = async (req, res) => {
     try {
@@ -32,6 +48,7 @@ const deleteMeta = async (req, res) => {
 };
 
 export default {
-    createMeta, 
+    createMeta,
+    updateMeta, 
     deleteMeta
 };

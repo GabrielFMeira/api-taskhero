@@ -14,7 +14,28 @@ export default class MetaService{
             usuario_id: user.id
         });
     }
+async updateMeta(metaId, updateMetaDTO, payload) {
+    const user = await ObjectUtils.extractUserFromPayload(payload);
 
+    const meta = await Meta.findOne({
+        where: {
+            id: metaId,
+            usuario_id: user.id
+        }
+    });
+
+    if (!meta) {
+        throw new Error(`Meta não encontrada para o id ${metaId}`);
+    }
+
+    meta.titulo = updateMetaDTO.titulo ?? meta.titulo;
+    meta.descricao = updateMetaDTO.descricao ?? meta.descricao;
+    meta.status = updateMetaDTO.status ?? meta.status;
+
+    await meta.save();
+
+    return meta;
+}
     async deleteMeta(metaId, payload) {
         const user = await ObjectUtils.extractUserFromPayload(payload);
 
@@ -24,5 +45,9 @@ export default class MetaService{
             throw new Error(`Meta não encontrada para o id ${metaId}`);
         }
     }
+
+
+
+
 }
 
