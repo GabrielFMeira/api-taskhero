@@ -6,6 +6,7 @@ const routes = express.Router();
 
 routes.use(validateToken);
 routes.post('/:metaId/create', TarefaController.createTask);
+routes.put('/:metaId/update/:tarefaId', TarefaController.updateTarefa);
 routes.delete('/:metaId/delete/:tarefaId', TarefaController.deleteTarefa);
 
 export default routes;
