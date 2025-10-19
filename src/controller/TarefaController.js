@@ -46,8 +46,13 @@ const deleteTarefa = async (req, res) => {
     }
 };
 
+const concludeTarefa = async (req, res) => {
+    
+}
+
 export default {
     createTask,
     updateTarefa,
-    deleteTarefa
+    deleteTarefa,
+    concludeTarefa
 };

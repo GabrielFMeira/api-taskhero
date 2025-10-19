@@ -8,5 +8,6 @@ routes.use(validateToken);
 routes.post('/:metaId/create', TarefaController.createTask);
 routes.put('/:metaId/update/:tarefaId', TarefaController.updateTarefa);
 routes.delete('/:metaId/delete/:tarefaId', TarefaController.deleteTarefa);
+routes.put('/:metaId/update/:tarefaId/conclude', TarefaController.concludeTarefa)
 
 export default routes;

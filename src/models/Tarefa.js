@@ -22,9 +22,6 @@ Tarefa.init({
         type: DataTypes.TEXT,
         allowNull: true,
     },
-    data_limite: {
-        type: DataTypes.DATE,
-    },
     status: {
         type: DataTypes.ENUM(...Object.values(StatusEnum))
     },
