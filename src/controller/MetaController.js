@@ -47,8 +47,25 @@ const deleteMeta = async (req, res) => {
     }
 };
 
+const concludeMeta = async (req, res) => {
+    try {
+        const { metaId } = req.params;
+        const updatedMeta = await metaService.concludeMeta(metaId, req.user);
+        return res.status(200).json({
+            message: 'Meta concluída com sucesso!',
+            data: updatedMeta
+        });
+    } catch (err) {
+        res.status(400).json({
+            status: 400,
+            message: err.message
+        });
+    }
+}
+
 export default {
     createMeta,
     updateMeta, 
-    deleteMeta
+    deleteMeta,
+    concludeMeta
 };

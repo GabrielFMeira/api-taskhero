@@ -46,8 +46,23 @@ const deleteTarefa = async (req, res) => {
     }
 };
 
+const concludeTarefa = async (req, res) => {
+    try {
+        const { tarefaId, metaId } = req.params;
+        let updatedTarefa = await tarefaService.concludeTarefa(tarefaId, metaId, req.user);
+        return res.status(201).json({ 
+            message: 'Tarefa concluída com sucesso!',
+            data: updatedTarefa
+        }); 
+    } catch (error) {
+        console.error(error);
+        return res.status(400).json({ error: error.message });
+    }
+}
+
 export default {
     createTask,
     updateTarefa,
-    deleteTarefa
+    deleteTarefa,
+    concludeTarefa
 };

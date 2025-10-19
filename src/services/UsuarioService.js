@@ -1,8 +1,13 @@
 import Usuario from '../models/Usuario.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import {JWT_SECRET, SALT_ROUNDS} from '../middlewares/Auth.js';
-import { where } from 'sequelize';
+import dotenv from 'dotenv';
+import UsuarioRepository from '../repository/UsuarioRepository.js';
+import StatusEnum from '../enums/StatusEnum.js';
+
+dotenv.config();
+
+const usuarioRepository = new UsuarioRepository();
 
 export default class UsuarioService {
     async register(createUserDTO) {
@@ -12,7 +17,7 @@ export default class UsuarioService {
             throw new Error('O usuário já existe no sistema!');
         }
 
-        const hashedPass = await bcrypt.hash(createUserDTO.senha, SALT_ROUNDS);
+        const hashedPass = await bcrypt.hash(createUserDTO.senha, process.env.SALT_ROUNDS);
 
         const user = await Usuario.create({
             nome: createUserDTO.nome,
@@ -45,12 +50,30 @@ export default class UsuarioService {
             throw new Error('Usuário não encontrado');
         }
 
-        const hashedPass = await bcrypt.hash(passwordResetDTO.password, SALT_ROUNDS);
+        const hashedPass = await bcrypt.hash(passwordResetDTO.password, process.env.SALT_ROUNDS);
 
         await Usuario.update(
             { senha: hashedPass },
             { where: { email: user.email } }
         );
+    }
+
+    async addExperienceAndCoinsForConcludedMeta(user, metaStatus) {
+        let pointsToAdd = this.#getPointsToAddByStatus(metaStatus);
+        let xperienceToAdd = metaStatus === StatusEnum.CONCLUIDO ? 1 : 0;
+
+        await usuarioRepository.updateUserPointsAndExperience({
+            points: pointsToAdd,
+            userId: user.id,
+            xp: xperienceToAdd
+        });
+    }
+
+    async addCoinsForConcludedTarefa(user) {
+        await usuarioRepository.updateUserPointsAndExperience({
+            points: 10,
+            userId: user.id
+        });
     }
 
     #findUserByEmail(email) {
@@ -74,9 +97,27 @@ export default class UsuarioService {
 
     #generateToken(user) {
         return jwt.sign(
-            { id: user.id, email: user.email },
-            JWT_SECRET,
+            { 
+                id: user.id, 
+                email: user.email, 
+                nome: user.nome, 
+                xp_points: user.xp_points, 
+                level: user.level, 
+                lula_coins: user.lula_coins 
+            },
+            process.env.JWT_SECRET,
             { expiresIn: '4h' }
         );
+    }
+
+    #getPointsToAddByStatus(status) {
+        switch(status) {
+            case StatusEnum.CONCLUIDO:
+                return 100;
+            case StatusEnum.CONCLUIDO_COM_ATRASO:
+                return 50;
+            default:
+                throw new Error(`status inválido para atribuição de pontos ${status}`);
+        }
     }
 }
