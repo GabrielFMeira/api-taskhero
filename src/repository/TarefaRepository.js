@@ -16,6 +16,6 @@ export default class TarefaRepository {
                 returning: true
             }
         );
-        return tarefas;
+        return tarefas[0];
     }
 }
