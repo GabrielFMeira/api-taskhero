@@ -52,7 +52,7 @@ const concludeMeta = async (req, res) => {
         const { metaId } = req.params;
         const updatedMeta = await metaService.concludeMeta(metaId, req.user);
         return res.status(200).json({
-            message: 'Meta excluída com sucesso!',
+            message: 'Meta concluída com sucesso!',
             data: updatedMeta
         });
     } catch (err) {

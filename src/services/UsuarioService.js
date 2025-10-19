@@ -60,10 +60,18 @@ export default class UsuarioService {
 
     async addExperienceAndCoinsForConcludedMeta(user, metaStatus) {
         let pointsToAdd = this.#getPointsToAddByStatus(metaStatus);
+        let xperienceToAdd = metaStatus === StatusEnum.CONCLUIDO ? 1 : 0;
 
-        //TODO fazer o xp
         await usuarioRepository.updateUserPointsAndExperience({
-            points: user.lula_coins + pointsToAdd,
+            points: pointsToAdd,
+            userId: user.id,
+            xp: xperienceToAdd
+        });
+    }
+
+    async addCoinsForConcludedTarefa(user) {
+        await usuarioRepository.updateUserPointsAndExperience({
+            points: 10,
             userId: user.id
         });
     }
@@ -89,7 +97,14 @@ export default class UsuarioService {
 
     #generateToken(user) {
         return jwt.sign(
-            { id: user.id, email: user.email },
+            { 
+                id: user.id, 
+                email: user.email, 
+                nome: user.nome, 
+                xp_points: user.xp_points, 
+                level: user.level, 
+                lula_coins: user.lula_coins 
+            },
             process.env.JWT_SECRET,
             { expiresIn: '4h' }
         );
@@ -100,7 +115,7 @@ export default class UsuarioService {
             case StatusEnum.CONCLUIDO:
                 return 100;
             case StatusEnum.CONCLUIDO_COM_ATRASO:
-                return 100;
+                return 50;
             default:
                 throw new Error(`status inválido para atribuição de pontos ${status}`);
         }

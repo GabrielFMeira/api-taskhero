@@ -7,8 +7,8 @@ export default class MetaRepository {
             {
                 status: seq.literal(`
                     CASE
-                        WHEN data_fim < NOW() THEN 'CONCLUIDO_COM_ATRASO'
-                        ELSE 'CONCLUIDO'
+                        WHEN data_fim < NOW() THEN 'CONCLUIDO_COM_ATRASO'::enum_metas_status
+                        ELSE 'CONCLUIDO'::enum_metas_status
                     END
                 `)
             },

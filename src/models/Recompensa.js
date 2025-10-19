@@ -23,6 +23,10 @@ Recompensa.init({
     },
     minimum_level: {
         type: DataTypes.INTEGER
+    },
+    name: {
+        type: DataTypes.STRING,
+        allowNull: false
     }
 }, {
   sequelize: seq,

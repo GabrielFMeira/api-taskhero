@@ -2,13 +2,14 @@ import seq from '../db.js';
 import Usuario from '../models/Usuario.js';
 
 export default class UsuarioRepository {
-    //TODO verificar se um dos dois parametros é null
     async updateUserPointsAndExperience({points, xp, userId}) {
-        const [rowsUpdated] = Usuario.update(
-            {
-                lula_coins: points,
-                xp_points: xp
-            },
+        const dataToUpdate = {};
+
+        if (points !== undefined) dataToUpdate.lula_coins = seq.literal(`lula_coins + ${Number(points)}`);
+        if (xp !== undefined) dataToUpdate.xp_points = seq.literal(`xp_points + ${Number(xp)}`);
+
+        await Usuario.update(
+            dataToUpdate,
             {
                 where: {
                     id: userId
@@ -16,7 +17,5 @@ export default class UsuarioRepository {
                 returning: true
             }
         );
-
-        return rowsUpdated;
     }
 }

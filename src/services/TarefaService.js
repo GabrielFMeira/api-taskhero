@@ -1,6 +1,11 @@
 import Tarefa from '../models/Tarefa.js'
 import StatusEnum from '../enums/StatusEnum.js';
 import ObjectUtils from "../utils/ObjectUtils.js"
+import TarefaRepository from '../repository/TarefaRepository.js';
+import UsuarioService from './UsuarioService.js';
+
+const tarefaRepository = new TarefaRepository();
+const usuarioService = new UsuarioService();
 
 export default class TarefaService{
     async create(metaId, tasksDataArray){ 
@@ -16,7 +21,7 @@ export default class TarefaService{
         await Tarefa.bulkCreate(tasksToCreate); 
     }
 
-    async updateTarefa(tarefaId,metaId, updateTaskDTO, payload) {
+    async updateTarefa(tarefaId, metaId, updateTaskDTO) {
         const tarefa = await Tarefa.findOne({
             where: {
               id: tarefaId,
@@ -43,5 +48,12 @@ export default class TarefaService{
         if (deletedCount === 0) {
             throw new Error(`Tarefa não encontrada para o id ${tarefaId}`);
         }
+    }
+
+    async concludeTarefa(tarefaId, metaId, payload) {
+        const user = await ObjectUtils.extractUserFromPayload(payload);
+        const updatedTarefa = tarefaRepository.concludeTarefa(tarefaId, metaId);
+        await usuarioService.addCoinsForConcludedTarefa(user);
+        return updatedTarefa;
     }
 }   
