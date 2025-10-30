@@ -60,9 +60,26 @@ const concludeTarefa = async (req, res) => {
     }
 }
 
+async function getTarefas(req, res) {
+  try {
+    const { metaId } = req.params;
+    const filtros = req.query; 
+    const tarefas = await tarefaService.findAll(metaId, filtros);
+
+    return res.status(200).json({
+      data: tarefas,
+      message: 'Tarefas listadas com sucesso!'
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(400).json({ error: error.message });
+  }
+}
+
 export default {
     createTask,
     updateTarefa,
     deleteTarefa,
-    concludeTarefa
+    concludeTarefa,
+    getTarefas
 };

@@ -8,19 +8,19 @@ const tarefaRepository = new TarefaRepository();
 const usuarioService = new UsuarioService();
 
 export default class TarefaService{
-    async create(metaId, tasksDataArray){ 
-        const tasksToCreate = tasksDataArray.map(taskDTO => ({
+    async create(metaId, tasksDataArray) {
+        const tasks = Array.isArray(tasksDataArray) ? tasksDataArray : [tasksDataArray];
+
+        const tasksToCreate = tasks.map(taskDTO => ({
             titulo: taskDTO.titulo,
-            descricao: taskDTO.descricao,
-            data_limite: taskDTO.data_limite,
-            prioridade: taskDTO.prioridade, 
-            status: StatusEnum.PENDENTE,
-            meta_id: metaId,
-        }));
+           descricao: taskDTO.descricao,
+           prioridade: taskDTO.prioridade,
+           status: StatusEnum.PENDENTE,
+           meta_id: metaId,
+    }));
 
-        await Tarefa.bulkCreate(tasksToCreate); 
-    }
-
+    await Tarefa.bulkCreate(tasksToCreate);
+}
     async updateTarefa(tarefaId, metaId, updateTaskDTO) {
         const tarefa = await Tarefa.findOne({
             where: {
@@ -56,4 +56,11 @@ export default class TarefaService{
         await usuarioService.addCoinsForConcludedTarefa(user);
         return updatedTarefa;
     }
+    async findAll(metaId, filtros = {}) {
+    if (!metaId) throw new Error('metaId é obrigatório para buscar tarefas.');
+
+    const tarefas = await tarefaRepository.findAllRaw(metaId, filtros);
+
+    return tarefas;
+  }
 }   

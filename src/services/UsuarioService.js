@@ -17,7 +17,7 @@ export default class UsuarioService {
             throw new Error('O usuário já existe no sistema!');
         }
 
-        const hashedPass = await bcrypt.hash(createUserDTO.senha, process.env.SALT_ROUNDS);
+        const hashedPass = await bcrypt.hash(createUserDTO.senha, Number(process.env.SALT_ROUNDS));
 
         const user = await Usuario.create({
             nome: createUserDTO.nome,

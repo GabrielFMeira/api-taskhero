@@ -59,5 +59,34 @@ export default class MetaService{
         await usuarioService.addExperienceAndCoinsForConcludedMeta(user, updatedMeta.status);
         return updatedMeta;
     }
-}
+    
+async listMetas(payload, page = 1, status = null) {
+    const user = await ObjectUtils.extractUserFromPayload(payload);
 
+    const { metas, total, concluidas, totalPages } =
+        await metaRepository.listMetasByUser(user.id, page, 10, status);
+
+    const metasWithProgress = metas.map(meta => {
+        const tarefas = meta.tarefas ?? [];
+        const concluidasTarefas = tarefas.filter(t => t.status === 'CONCLUIDO').length;
+        const progresso = tarefas.length
+            ? Math.round((concluidasTarefas / tarefas.length) * 100)
+            : 0;
+
+        const metaJSON = { ...meta };
+        delete metaJSON.notificado_expiracao;
+        delete metaJSON.createdAt;
+        delete metaJSON.updatedAt;
+
+        return { ...metaJSON, progresso };
+    });
+
+    return {
+        metas: metasWithProgress,
+        totalMetas: total,
+        concluidas,
+        page,
+        totalPages
+    };
+}
+}
