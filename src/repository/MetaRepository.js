@@ -24,24 +24,36 @@ export default class MetaRepository {
         return metas[0];
     }
 
-async listMetasByUser(userId, page = 1, limit = 10, status = null, sortField = 'createdAt', sortOrder = 'DESC') {
+async listMetasByUser(
+    userId,
+    page = 1,
+    limit = 10,
+    status = null,
+    sortField = 'createdAt',
+    sortOrder = 'DESC'
+) {
     const offset = (page - 1) * limit;
 
     const allowedFields = ['createdAt', 'titulo', 'data_inicio', 'data_fim', 'status'];
     const allowedOrder = ['ASC', 'DESC'];
 
-    const field = allowedFields.includes(sortField) ? `"${sortField}"` : '"createdAt"';
+    const field = allowedFields.includes(sortField) ? sortField : 'createdAt';
     const order = allowedOrder.includes(sortOrder.toUpperCase()) ? sortOrder.toUpperCase() : 'DESC';
 
     const query = `
         SELECT 
-            m.*,
+            m.id,
+            m.titulo,
+            m.data_inicio,
+            m.data_fim,
+            m.status,
+            m."createdAt",
             COUNT(*) OVER() AS total_metas,
             SUM(CASE WHEN m.status = 'CONCLUIDO' THEN 1 ELSE 0 END) OVER() AS concluidas
         FROM metas m
         WHERE m.usuario_id = :userId
           AND (:status IS NULL OR m.status = :status)
-        ORDER BY m.${field} ${order}
+        ORDER BY m."${field}" ${order}
         LIMIT :limit OFFSET :offset;
     `;
 

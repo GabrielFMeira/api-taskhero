@@ -74,9 +74,6 @@ async listMetas(payload, page = 1, status = null) {
             : 0;
 
         const metaJSON = { ...meta };
-        delete metaJSON.notificado_expiracao;
-        delete metaJSON.createdAt;
-        delete metaJSON.updatedAt;
 
         return { ...metaJSON, progresso };
     });
