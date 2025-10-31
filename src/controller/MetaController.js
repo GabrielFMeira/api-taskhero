@@ -63,9 +63,25 @@ const concludeMeta = async (req, res) => {
     }
 }
 
+async function listMetas(req, res) {
+    try {
+        const page = parseInt(req.query.page) || 1;
+        const metasData = await metaService.listMetas(req.user, page);
+
+        return res.status(200).json({
+            data: metasData
+        });
+    } catch (err) {
+        res.status(400).json({
+            status: 400,
+            message: err.message
+        });
+    }
+}
 export default {
     createMeta,
     updateMeta, 
     deleteMeta,
-    concludeMeta
+    concludeMeta,
+    listMetas,
 };

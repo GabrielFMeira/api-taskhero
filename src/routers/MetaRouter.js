@@ -5,6 +5,7 @@ import {validateToken} from "../middlewares/Auth.js";
 const routes = express.Router();
 
 routes.use(validateToken);
+routes.get('/list', MetaController.listMetas);
 routes.post('/create', MetaController.createMeta);
 routes.delete('/delete/:metaId', MetaController.deleteMeta);
 routes.put('/update/:metaId', MetaController.updateMeta);
