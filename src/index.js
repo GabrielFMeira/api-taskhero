@@ -2,12 +2,16 @@ import express from 'express';
 import routers from './routers/index.js';
 import db from './models/index.js';
 import dotenv from 'dotenv';
+import http from 'http';
+import {setupWebSocket} from './websocket/websocket.js';
 
 dotenv.config();
 const api = express();
+const server = http.createServer(api);
 
 api.use(express.json());
 api.use(routers);
+setupWebSocket(server);
 
 async function start() {
   try {
@@ -17,7 +21,7 @@ async function start() {
     await db.seq.sync({alter: true}); 
     console.log('Tabelas sincronizadas');
 
-    api.listen(8080, () => {
+    server.listen(8080, () => {
       console.log('Servidor rodando na porta 8080');
     });
   } catch (err) {
