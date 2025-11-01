@@ -15,6 +15,7 @@ async function createMeta(req, res) {
         });
     }
 }
+
 async function updateMeta(req, res) {
     try {
         const { metaId } = req.params;
@@ -78,6 +79,7 @@ async function listMetas(req, res) {
         });
     }
 }
+
 export default {
     createMeta,
     updateMeta, 

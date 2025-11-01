@@ -7,7 +7,7 @@ import MetaRepository from '../repository/MetaRepository.js';
 const usuarioService = new UsuarioService();
 const metaRepository = new MetaRepository();
 
-export default class MetaService{
+export default class MetaService {
     async create(createMetaDTO, payload) {
         const user = await ObjectUtils.extractUserFromPayload(payload);
         await Meta.create({
@@ -60,30 +60,30 @@ export default class MetaService{
         return updatedMeta;
     }
     
-async listMetas(payload, page = 1, status = null) {
-    const user = await ObjectUtils.extractUserFromPayload(payload);
+    async listMetas(payload, page = 1, status = null) {
+        const user = await ObjectUtils.extractUserFromPayload(payload);
 
-    const { metas, total, concluidas, totalPages } =
-        await metaRepository.listMetasByUser(user.id, page, 10, status);
+        const { metas, total, concluidas, totalPages } =
+            await metaRepository.listMetasByUser(user.id, page, 10, status);
 
-    const metasWithProgress = metas.map(meta => {
-        const tarefas = meta.tarefas ?? [];
-        const concluidasTarefas = tarefas.filter(t => t.status === 'CONCLUIDO').length;
-        const progresso = tarefas.length
-            ? Math.round((concluidasTarefas / tarefas.length) * 100)
-            : 0;
+        const metasWithProgress = metas.map(meta => {
+            const tarefas = meta.tarefas ?? [];
+            const concluidasTarefas = tarefas.filter(t => t.status === 'CONCLUIDO').length;
+            const progresso = tarefas.length
+                ? Math.round((concluidasTarefas / tarefas.length) * 100)
+                : 0;
 
-        const metaJSON = { ...meta };
+            const metaJSON = { ...meta };
 
-        return { ...metaJSON, progresso };
-    });
+            return { ...metaJSON, progresso };
+        });
 
-    return {
-        metas: metasWithProgress,
-        totalMetas: total,
-        concluidas,
-        page,
-        totalPages
-    };
-}
+        return {
+            metas: metasWithProgress,
+            totalMetas: total,
+            concluidas,
+            page,
+            totalPages
+        };
+    }
 }
