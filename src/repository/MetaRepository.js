@@ -1,5 +1,5 @@
 import Meta from '../models/Meta.js'
-import sequelize from '../db.js'
+import seq from '../db.js'
 import { QueryTypes } from 'sequelize';
 
 export default class MetaRepository {
@@ -57,7 +57,7 @@ export default class MetaRepository {
             LIMIT :limit OFFSET :offset;
         `;
 
-        const metas = await sequelize.query(query, {
+        const metas = await seq.query(query, {
             replacements: { userId, status, limit, offset },
             type: QueryTypes.SELECT
         });

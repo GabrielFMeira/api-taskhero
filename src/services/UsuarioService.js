@@ -4,6 +4,8 @@ import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import UsuarioRepository from '../repository/UsuarioRepository.js';
 import StatusEnum from '../enums/StatusEnum.js';
+import { sendToUser } from '../websocket/websocket.js';
+import ObjectUtils from '../utils/ObjectUtils.js';
 
 dotenv.config();
 
@@ -62,18 +64,26 @@ export default class UsuarioService {
         let pointsToAdd = this.#getPointsToAddByStatus(metaStatus);
         let xperienceToAdd = metaStatus === StatusEnum.CONCLUIDO ? 1 : 0;
 
-        await usuarioRepository.updateUserPointsAndExperience({
+        let updatedUser = await usuarioRepository.updateUserPointsAndExperience({
             points: pointsToAdd,
             userId: user.id,
             xp: xperienceToAdd
         });
+
+        updatedUser = await ObjectUtils.buildUserFromDatabaseReturn(updatedUser);
+
+        sendToUser(user.id, updatedUser);
     }
 
     async addCoinsForConcludedTarefa(user) {
-        await usuarioRepository.updateUserPointsAndExperience({
+        let updatedUser = await usuarioRepository.updateUserPointsAndExperience({
             points: 10,
             userId: user.id
         });
+
+        updatedUser = await ObjectUtils.buildUserFromDatabaseReturn(updatedUser);
+
+        sendToUser(user.id, updatedUser);
     }
 
     #findUserByEmail(email) {

@@ -8,7 +8,7 @@ export default class UsuarioRepository {
         if (points !== undefined) dataToUpdate.lula_coins = seq.literal(`lula_coins + ${Number(points)}`);
         if (xp !== undefined) dataToUpdate.xp_points = seq.literal(`xp_points + ${Number(xp)}`);
 
-        await Usuario.update(
+        const result =await Usuario.update(
             dataToUpdate,
             {
                 where: {
@@ -17,5 +17,16 @@ export default class UsuarioRepository {
                 returning: true
             }
         );
+
+        const affectedCount = Array.isArray(result) ? result[0] : result;
+        const affectedRows = Array.isArray(result) ? result[1] : undefined;
+
+        if (affectedCount === 0) return null;
+
+        if (affectedRows && affectedRows.length) {
+            return affectedRows[0];
+        }
+
+        return await Usuario.findByPk(userId);
     }
 }
