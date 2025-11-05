@@ -39,7 +39,7 @@ Usuario.init({
     type: DataTypes.INTEGER,
     defaultValue: 0
   },
-  lula_coins: {
+  task_coins: {
     type: DataTypes.INTEGER,
     defaultValue: 0
   }

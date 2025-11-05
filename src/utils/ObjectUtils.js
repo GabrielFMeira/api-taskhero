@@ -9,7 +9,7 @@ export default class ObjectUtils {
                 nome: payload.nome, 
                 xp_points: payload.xp_points, 
                 level: payload.level, 
-                lula_coins: payload.lula_coins 
+                task_coins: payload.task_coins
             };
     }
 
@@ -23,7 +23,7 @@ export default class ObjectUtils {
             nome: dbReturn.nome,
             xp_points: dbReturn.xp_points,
             level: dbReturn.level,
-            lula_coins: dbReturn.lula_coins
+            task_coins: dbReturn.task_coins
         };
     }
 }

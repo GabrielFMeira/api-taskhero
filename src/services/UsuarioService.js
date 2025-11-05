@@ -113,7 +113,7 @@ export default class UsuarioService {
                 nome: user.nome, 
                 xp_points: user.xp_points, 
                 level: user.level, 
-                lula_coins: user.lula_coins 
+                task_coins: user.task_coins
             },
             process.env.JWT_SECRET,
             { expiresIn: '4h' }

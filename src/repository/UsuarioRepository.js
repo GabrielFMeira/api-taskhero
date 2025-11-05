@@ -5,10 +5,10 @@ export default class UsuarioRepository {
     async updateUserPointsAndExperience({points, xp, userId}) {
         const dataToUpdate = {};
 
-        if (points !== undefined) dataToUpdate.lula_coins = seq.literal(`lula_coins + ${Number(points)}`);
+        if (points !== undefined) dataToUpdate.task_coins = seq.literal(`task_coins + ${Number(points)}`);
         if (xp !== undefined) dataToUpdate.xp_points = seq.literal(`xp_points + ${Number(xp)}`);
 
-        const result =await Usuario.update(
+        const result = await Usuario.update(
             dataToUpdate,
             {
                 where: {
