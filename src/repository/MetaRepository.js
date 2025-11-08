@@ -34,22 +34,11 @@ export default class MetaRepository {
     ) {
         const offset = (page - 1) * limit;
 
-        const fieldMapping = {
-            'created': 'createdAt',
-            'deadline': 'data_fim',
-            'progress': 'progress_calculated',
-            'status': 'status',
-            'createdAt': 'createdAt',
-            'titulo': 'titulo',
-            'data_inicio': 'data_inicio',
-            'data_fim': 'data_fim'
-        };
-
-        const mappedField = fieldMapping[sortField] || 'createdAt';
+        // Validação de campos permitidos para ordenação
         const allowedFields = ['createdAt', 'titulo', 'data_inicio', 'data_fim', 'status', 'progress_calculated'];
         const allowedOrder = ['ASC', 'DESC'];
 
-        const field = allowedFields.includes(mappedField) ? mappedField : 'createdAt';
+        const field = allowedFields.includes(sortField) ? sortField : 'createdAt';
         const order = allowedOrder.includes(sortOrder.toUpperCase()) ? sortOrder.toUpperCase() : 'DESC';
 
         const progressCalculation = `
