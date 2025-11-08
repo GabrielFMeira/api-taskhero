@@ -7,10 +7,12 @@ import StatusEnum from '../enums/StatusEnum.js';
 import { sendToUser } from '../websocket/websocket.js';
 import ObjectUtils from '../utils/ObjectUtils.js';
 import Recompensa from "../models/Recompensa.js";
+import RecompensaService from "./RecompensaService.js"
 
 dotenv.config();
 
 const usuarioRepository = new UsuarioRepository();
+const recompensaService = new RecompensaService();
 
 export default class UsuarioService {
     async register(createUserDTO) {
@@ -73,6 +75,7 @@ export default class UsuarioService {
 
         updatedUser = await ObjectUtils.buildUserFromDatabaseReturn(updatedUser);
 
+        this.verifyAchievement(updatedUser);
         sendToUser(user.id, updatedUser);
     }
 
@@ -84,6 +87,7 @@ export default class UsuarioService {
 
         updatedUser = await ObjectUtils.buildUserFromDatabaseReturn(updatedUser);
 
+        this.verifyAchievement(updatedUser);
         sendToUser(user.id, updatedUser);
     }
 
@@ -108,6 +112,11 @@ export default class UsuarioService {
         await usuario.save();
 
         return await usuario.getRecompensas();
+    }
+
+    async verifyAchievement(updatedUser) {
+        const user = await this.#findUserByEmail(updatedUser.email);
+        recompensaService.verifyAchievement(user);
     }
 
     #findUserByEmail(email) {

@@ -31,6 +31,10 @@ Recompensa.init({
     preco: {
         type: DataTypes.INTEGER,
         allowNull: false
+    },
+    notified: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
     }
 }, {
   sequelize: seq,
