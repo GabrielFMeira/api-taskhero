@@ -91,14 +91,23 @@ export default class UsuarioService {
         const recompensa = await Recompensa.findOne({
             where : {image_id: recompensaId}
         });
+        const usuario = await this.#findUserByEmail(user.email);
 
         if (!recompensa) {
             throw new Error(`Recompensa não encontrada para o id ${recompensaId}.`);
-        } else if (recompensa.preco > user.task_coins) {
+        } else if (recompensa.preco > usuario.task_coins) {
             throw new Error('Coins insuficientes para realixzar compra deste item.')
         }
 
-        //TODO finalizar a compra
+        return await this.updateUserProfilePicturesAndEmblems(usuario, recompensa);
+    }
+
+    async updateUserProfilePicturesAndEmblems(usuario, recompensa) {
+        await usuario.addRecompensa(recompensa);
+        usuario.task_coins -= recompensa.preco;
+        await usuario.save();
+
+        return await usuario.getRecompensas();
     }
 
     #findUserByEmail(email) {

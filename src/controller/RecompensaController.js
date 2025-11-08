@@ -5,10 +5,9 @@ const usuarioService = new UsuarioService();
 const compraLogotipo = async (req, res) => {
     try {
         const { recompensaId } = req.params
-        let user = await usuarioService.buyLogo(recompensaId, req.user);
-        //TODO pensar em retornar com user o array dos ids de imagens disponíveis, aqui e em outros lugares
+        let recompensas = await usuarioService.buyLogo(recompensaId, req.user);
         return res.status(200).json({
-            data: user
+            data: recompensas
         });
     } catch (err) {
         res.status(400).json({
