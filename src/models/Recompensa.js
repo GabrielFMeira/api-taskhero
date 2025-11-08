@@ -14,7 +14,7 @@ class Recompensa extends Model {
 }
 
 Recompensa.init({
-    caminho: {
+    image_id: {
         type: DataTypes.STRING,
         allowNull: false
     },
@@ -26,6 +26,10 @@ Recompensa.init({
     },
     name: {
         type: DataTypes.STRING,
+        allowNull: false
+    },
+    preco: {
+        type: DataTypes.INTEGER,
         allowNull: false
     }
 }, {

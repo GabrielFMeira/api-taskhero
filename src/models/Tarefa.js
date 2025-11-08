@@ -17,10 +17,6 @@ Tarefa.init({
     titulo: {
         type: DataTypes.STRING,
         allowNull: false,
-    }, 
-    descricao: {
-        type: DataTypes.TEXT,
-        allowNull: true,
     },
     status: {
         type: DataTypes.ENUM(...Object.values(StatusEnum))

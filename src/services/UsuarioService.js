@@ -6,6 +6,7 @@ import UsuarioRepository from '../repository/UsuarioRepository.js';
 import StatusEnum from '../enums/StatusEnum.js';
 import { sendToUser } from '../websocket/websocket.js';
 import ObjectUtils from '../utils/ObjectUtils.js';
+import Recompensa from "../models/Recompensa.js";
 
 dotenv.config();
 
@@ -84,6 +85,29 @@ export default class UsuarioService {
         updatedUser = await ObjectUtils.buildUserFromDatabaseReturn(updatedUser);
 
         sendToUser(user.id, updatedUser);
+    }
+
+    async buyLogo(recompensaId, user) {
+        const recompensa = await Recompensa.findOne({
+            where : {image_id: recompensaId}
+        });
+        const usuario = await this.#findUserByEmail(user.email);
+
+        if (!recompensa) {
+            throw new Error(`Recompensa não encontrada para o id ${recompensaId}.`);
+        } else if (recompensa.preco > usuario.task_coins) {
+            throw new Error('Coins insuficientes para realixzar compra deste item.')
+        }
+
+        return await this.updateUserProfilePicturesAndEmblems(usuario, recompensa);
+    }
+
+    async updateUserProfilePicturesAndEmblems(usuario, recompensa) {
+        await usuario.addRecompensa(recompensa);
+        usuario.task_coins -= recompensa.preco;
+        await usuario.save();
+
+        return await usuario.getRecompensas();
     }
 
     #findUserByEmail(email) {
