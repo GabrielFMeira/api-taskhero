@@ -44,10 +44,12 @@ export default class MetaRepository {
             SELECT 
                 m.id,
                 m.titulo,
+                m.descricao,
                 m.data_inicio,
                 m.data_fim,
                 m.status,
                 m."createdAt",
+                m."updatedAt",
                 COUNT(*) OVER() AS total_metas,
                 SUM(CASE WHEN m.status = 'CONCLUIDO' THEN 1 ELSE 0 END) OVER() AS concluidas
             FROM metas m
@@ -64,6 +66,27 @@ export default class MetaRepository {
 
         const total = metas.length > 0 ? parseInt(metas[0].total_metas, 10) : 0;
         const concluidas = metas.length > 0 ? parseInt(metas[0].concluidas, 10) : 0;
+
+        // Buscar tarefas para cada meta
+        for (const meta of metas) {
+            const tarefasQuery = `
+                SELECT 
+                    id,
+                    titulo,
+                    prioridade,
+                    status,
+                    "createdAt",
+                    "updatedAt"
+                FROM tarefas
+                WHERE meta_id = :metaId
+                ORDER BY "createdAt" ASC;
+            `;
+            
+            meta.tarefas = await seq.query(tarefasQuery, {
+                replacements: { metaId: meta.id },
+                type: QueryTypes.SELECT
+            });
+        }
 
         return {
             metas,

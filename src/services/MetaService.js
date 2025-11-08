@@ -10,7 +10,7 @@ const metaRepository = new MetaRepository();
 export default class MetaService {
     async create(createMetaDTO, payload) {
         const user = await ObjectUtils.extractUserFromPayload(payload);
-        await Meta.create({
+        const meta = await Meta.create({
             titulo: createMetaDTO.titulo,
             descricao: createMetaDTO.descricao,
             data_inicio: createMetaDTO.data_inicio,
@@ -18,6 +18,7 @@ export default class MetaService {
             status: StatusEnum.PENDENTE,
             usuario_id: user.id
         });
+        return meta;
     }
 
     async updateMeta(metaId, updateMetaDTO, payload) {
@@ -37,6 +38,13 @@ export default class MetaService {
         meta.titulo = updateMetaDTO.titulo ?? meta.titulo;
         meta.descricao = updateMetaDTO.descricao ?? meta.descricao;
         meta.status = updateMetaDTO.status ?? meta.status;
+        
+        if (updateMetaDTO.data_inicio) {
+            meta.data_inicio = updateMetaDTO.data_inicio;
+        }
+        if (updateMetaDTO.data_fim) {
+            meta.data_fim = updateMetaDTO.data_fim;
+        }
 
         await meta.save();
 
