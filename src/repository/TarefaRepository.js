@@ -43,7 +43,7 @@ export default class TarefaRepository {
             SELECT 
                 id,
                 titulo AS "title",
-                descricao AS "description",
+                meta_id AS "goalId",
                 CASE WHEN status = '${StatusEnum.CONCLUIDO}' THEN TRUE ELSE FALSE END AS "completed",
                 CASE WHEN status = '${StatusEnum.CONCLUIDO}' THEN "updatedAt" ELSE NULL END AS "completedAt",
                 prioridade AS "priority",

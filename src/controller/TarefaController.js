@@ -6,9 +6,12 @@ async function createTask(req, res) {
     try {
         const { metaId } = req.params;
 
-        await tarefaService.create(metaId, req.body);
+        const createdTasks = await tarefaService.create(metaId, req.body);
 
-        return res.status(201).json({ message: 'Tarefas criadas com sucesso!' }); 
+        return res.status(201).json({ 
+            message: 'Tarefas criadas com sucesso!',
+            data: createdTasks
+        }); 
     } catch (error) {
         console.error(error);
         return res.status(400).json({ error: error.message });

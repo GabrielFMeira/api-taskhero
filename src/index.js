@@ -9,6 +9,18 @@ dotenv.config();
 const api = express();
 const server = http.createServer(api);
 
+api.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+  
+  next();
+});
+
 api.use(express.json());
 api.use(routers);
 setupWebSocket(server);

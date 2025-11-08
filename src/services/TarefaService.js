@@ -13,13 +13,13 @@ export default class TarefaService{
 
         const tasksToCreate = tasks.map(taskDTO => ({
             titulo: taskDTO.titulo,
-            descricao: taskDTO.descricao,
             prioridade: taskDTO.prioridade,
             status: StatusEnum.PENDENTE,
             meta_id: metaId,
         }));
 
-        await Tarefa.bulkCreate(tasksToCreate);
+        const createdTasks = await Tarefa.bulkCreate(tasksToCreate);
+        return createdTasks;
     }
 
     async updateTarefa(tarefaId, metaId, updateTaskDTO) {
@@ -35,8 +35,12 @@ export default class TarefaService{
         }
 
         tarefa.titulo = updateTaskDTO.titulo ?? tarefa.titulo;
-        tarefa.descricao = updateTaskDTO.descricao ?? tarefa.descricao;
-        tarefa.status = updateTaskDTO.status ?? tarefa.status;
+        tarefa.prioridade = updateTaskDTO.prioridade ?? tarefa.prioridade;
+        
+        // Se o status for explicitamente passado, atualiza (permite voltar para PENDENTE)
+        if (updateTaskDTO.status !== undefined) {
+            tarefa.status = updateTaskDTO.status;
+        }
 
         await tarefa.save();
 
