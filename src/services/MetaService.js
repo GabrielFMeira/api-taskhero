@@ -151,4 +151,32 @@ export default class MetaService {
             totalPages
         };
     }
+
+    async getMetaById(metaId, payload) {
+        const user = await ObjectUtils.extractUserFromPayload(payload);
+
+        const meta = await Meta.findOne({
+            where: {
+                id: metaId,
+                usuario_id: user.id
+            },
+            include: [{
+                model: Tarefa,
+                as: 'tarefas'
+            }]
+        });
+
+        if (!meta) {
+            throw new Error(`Meta não encontrada para o id ${metaId}`);
+        }
+
+        const metaJSON = meta.toJSON();
+        const tarefas = metaJSON.tarefas ?? [];
+        const concluidasTarefas = tarefas.filter(t => t.status === 'CONCLUIDO').length;
+        const progresso = tarefas.length
+            ? Math.round((concluidasTarefas / tarefas.length) * 100)
+            : 0;
+
+        return { ...metaJSON, progresso };
+    }
 }

@@ -84,10 +84,27 @@ async function listMetas(req, res) {
     }
 }
 
+async function getMetaById(req, res) {
+    try {
+        const { metaId } = req.params;
+        const meta = await metaService.getMetaById(metaId, req.user);
+
+        return res.status(200).json({
+            data: meta
+        });
+    } catch (err) {
+        res.status(400).json({
+            status: 400,
+            message: err.message
+        });
+    }
+}
+
 export default {
     createMeta,
     updateMeta, 
     deleteMeta,
     concludeMeta,
     listMetas,
+    getMetaById,
 };
