@@ -83,7 +83,7 @@ export default class UsuarioService {
 
         updatedUser = await ObjectUtils.buildUserFromDatabaseReturn(updatedUser);
 
-        this.verifyAchievement(updatedUser);
+        this.verifyMetaAchievement(updatedUser);
         sendToUser(user.id, updatedUser);
     }
 
@@ -95,7 +95,7 @@ export default class UsuarioService {
 
         updatedUser = await ObjectUtils.buildUserFromDatabaseReturn(updatedUser);
 
-        this.verifyAchievement(updatedUser);
+        this.verifyTarefaAchievement(updatedUser);
         sendToUser(user.id, updatedUser);
     }
 
@@ -122,9 +122,14 @@ export default class UsuarioService {
         return await usuario.getRecompensas();
     }
 
-    async verifyAchievement(updatedUser) {
+    async verifyMetaAchievement(updatedUser) {
         const user = await this.#findUserByEmail(updatedUser.email);
-        recompensaService.verifyAchievements(user);
+        recompensaService.verifyMetaAchievements(user);
+    }
+
+    async verifyTarefaAchievement(updatedUser) {
+        const user = await this.#findUserByEmail(updatedUser.email);
+        recompensaService.verifyTarefaAchievements(user);
     }
 
     #findUserByEmail(email) {
