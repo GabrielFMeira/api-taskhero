@@ -69,6 +69,71 @@ export default class UsuarioService {
         );
     }
 
+    async updateProfile(userId, updateProfileDTO) {
+        const user = await Usuario.findByPk(userId);
+
+        if (!user) {
+            throw new Error('Usuário não encontrado');
+        }
+
+        // Verifica se o email está sendo alterado
+        if (updateProfileDTO.email && updateProfileDTO.email !== user.email) {
+            const existingUser = await this.#findUserByEmail(updateProfileDTO.email);
+            if (existingUser) {
+                throw new Error('Este e-mail já está em uso por outro usuário');
+            }
+        }
+
+        // Se está alterando senha, verifica a senha atual
+        if (updateProfileDTO.currentPassword && updateProfileDTO.newPassword) {
+            const isPasswordValid = await this.#verifyPassword(
+                updateProfileDTO.currentPassword, 
+                user.senha
+            );
+
+            if (!isPasswordValid) {
+                throw new Error('Senha atual incorreta');
+            }
+
+            // Hash da nova senha
+            const hashedPass = await bcrypt.hash(
+                updateProfileDTO.newPassword, 
+                Number(process.env.SALT_ROUNDS)
+            );
+
+            await Usuario.update(
+                { 
+                    nome: updateProfileDTO.nome || user.nome,
+                    email: updateProfileDTO.email || user.email,
+                    senha: hashedPass
+                },
+                { where: { id: userId } }
+            );
+        } else {
+            // Atualiza apenas nome e/ou email
+            await Usuario.update(
+                { 
+                    nome: updateProfileDTO.nome || user.nome,
+                    email: updateProfileDTO.email || user.email
+                },
+                { where: { id: userId } }
+            );
+        }
+
+        // Busca o usuário atualizado
+        const updatedUser = await Usuario.findByPk(userId);
+
+        // Gera novo token com dados atualizados
+        const token = this.#generateToken(updatedUser);
+
+        return {
+            token,
+            nome: updatedUser.nome,
+            email: updatedUser.email,
+            level: updatedUser.level
+        };
+    }
+
     async addExperienceAndCoinsForConcludedMeta(user, metaStatus) {
         let pointsToAdd = this.#getPointsToAddByStatus(metaStatus);
         let xperienceToAdd = metaStatus === StatusEnum.CONCLUIDO ? 1 : 0;

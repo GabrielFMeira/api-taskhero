@@ -44,8 +44,25 @@ async function resetPassword(req, res) {
     }
 }
 
+async function updateProfile(req, res) {
+    try {
+        const userId = req.user.id;
+        const updatedData = await usuarioService.updateProfile(userId, req.body);
+        return res.status(200).json({
+            data: updatedData,
+            message: 'Perfil atualizado com sucesso!'
+        });
+    } catch (err) {
+        res.status(400).json({
+            status: 400,
+            message: err.message
+        });
+    }
+}
+
 export default {
     register,
     login,
-    resetPassword
+    resetPassword,
+    updateProfile
 };
