@@ -94,6 +94,7 @@ export default class MetaService {
             throw new Error(`Meta não encontrada para o id ${metaId}`);
         }
 
+        // Metas expiradas podem ser concluídas, mas receberão status CONCLUIDO_COM_ATRASO
         const tarefas = meta.tarefas || [];
         
         if (tarefas.length === 0) {
@@ -106,8 +107,12 @@ export default class MetaService {
             throw new Error(`Não é possível concluir a meta. Ainda existem ${tarefasPendentes.length} tarefa(s) pendente(s)`);
         }
 
+        const now = new Date();
+        const dataFim = new Date(meta.data_fim);
+        const statusConclusao = now > dataFim ? StatusEnum.CONCLUIDO_COM_ATRASO : StatusEnum.CONCLUIDO;
+
         const updatedMeta = await metaRepository.updateMetaStatusToConcluido(metaId, user.id);
-        await usuarioService.addExperienceAndCoinsForConcludedMeta(user, updatedMeta.status);
+        await usuarioService.addExperienceAndCoinsForConcludedMeta(user, statusConclusao);
         
         const metaCompleta = await Meta.findOne({
             where: {
