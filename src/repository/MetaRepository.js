@@ -34,11 +34,33 @@ export default class MetaRepository {
     ) {
         const offset = (page - 1) * limit;
 
-        const allowedFields = ['createdAt', 'titulo', 'data_inicio', 'data_fim', 'status'];
+        const fieldMapping = {
+            'created': 'createdAt',
+            'deadline': 'data_fim',
+            'progress': 'progress_calculated',
+            'status': 'status',
+            'createdAt': 'createdAt',
+            'titulo': 'titulo',
+            'data_inicio': 'data_inicio',
+            'data_fim': 'data_fim'
+        };
+
+        const mappedField = fieldMapping[sortField] || 'createdAt';
+        const allowedFields = ['createdAt', 'titulo', 'data_inicio', 'data_fim', 'status', 'progress_calculated'];
         const allowedOrder = ['ASC', 'DESC'];
 
-        const field = allowedFields.includes(sortField) ? sortField : 'createdAt';
+        const field = allowedFields.includes(mappedField) ? mappedField : 'createdAt';
         const order = allowedOrder.includes(sortOrder.toUpperCase()) ? sortOrder.toUpperCase() : 'DESC';
+
+        const progressCalculation = `
+            CASE 
+                WHEN (SELECT COUNT(*) FROM tarefas WHERE meta_id = m.id) = 0 THEN 0
+                ELSE ROUND((
+                    (SELECT COUNT(*) FROM tarefas WHERE meta_id = m.id AND status = 'CONCLUIDO')::numeric / 
+                    (SELECT COUNT(*) FROM tarefas WHERE meta_id = m.id)::numeric
+                ) * 100)
+            END
+        `;
 
         const query = `
             SELECT 
@@ -50,12 +72,13 @@ export default class MetaRepository {
                 m.status,
                 m."createdAt",
                 m."updatedAt",
+                ${progressCalculation} as progress_calculated,
                 COUNT(*) OVER() AS total_metas,
                 SUM(CASE WHEN m.status = 'CONCLUIDO' THEN 1 ELSE 0 END) OVER() AS concluidas
             FROM metas m
             WHERE m.usuario_id = :userId
             AND (:status IS NULL OR m.status = :status)
-            ORDER BY m."${field}" ${order}
+            ORDER BY ${field === 'progress_calculated' ? progressCalculation : `m."${field}"`} ${order}
             LIMIT :limit OFFSET :offset;
         `;
 
@@ -79,7 +102,7 @@ export default class MetaRepository {
                     "updatedAt"
                 FROM tarefas
                 WHERE meta_id = :metaId
-                ORDER BY "createdAt" ASC;
+                ORDER BY "createdAt" DESC;
             `;
             
             meta.tarefas = await seq.query(tarefasQuery, {

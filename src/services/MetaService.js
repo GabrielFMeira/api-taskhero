@@ -1,4 +1,5 @@
 import Meta from '../models/Meta.js';
+import Tarefa from '../models/Tarefa.js';
 import StatusEnum from '../enums/StatusEnum.js';
 import ObjectUtils from '../utils/ObjectUtils.js';
 import UsuarioService from './UsuarioService.js';
@@ -48,7 +49,21 @@ export default class MetaService {
 
         await meta.save();
 
-        return meta;
+
+        const metaCompleta = await Meta.findOne({
+            where: {
+                id: metaId,
+                usuario_id: user.id
+            },
+            include: [{
+                model: Tarefa,
+                as: 'tarefas'
+            }]
+        });
+
+        const metaJSON = metaCompleta.toJSON();
+        
+        return metaJSON;
     }
 
     async deleteMeta(metaId, payload) {
@@ -63,16 +78,58 @@ export default class MetaService {
 
     async concludeMeta(metaId, payload) {
         const user = await ObjectUtils.extractUserFromPayload(payload);
+        
+        const meta = await Meta.findOne({
+            where: {
+                id: metaId,
+                usuario_id: user.id
+            },
+            include: [{
+                model: Tarefa,
+                as: 'tarefas'
+            }]
+        });
+
+        if (!meta) {
+            throw new Error(`Meta não encontrada para o id ${metaId}`);
+        }
+
+        const tarefas = meta.tarefas || [];
+        
+        if (tarefas.length === 0) {
+            throw new Error('Não é possível concluir uma meta sem tarefas');
+        }
+
+        const tarefasPendentes = tarefas.filter(t => t.status !== 'CONCLUIDO');
+        
+        if (tarefasPendentes.length > 0) {
+            throw new Error(`Não é possível concluir a meta. Ainda existem ${tarefasPendentes.length} tarefa(s) pendente(s)`);
+        }
+
         const updatedMeta = await metaRepository.updateMetaStatusToConcluido(metaId, user.id);
         await usuarioService.addExperienceAndCoinsForConcludedMeta(user, updatedMeta.status);
-        return updatedMeta;
+        
+        const metaCompleta = await Meta.findOne({
+            where: {
+                id: metaId,
+                usuario_id: user.id
+            },
+            include: [{
+                model: Tarefa,
+                as: 'tarefas'
+            }]
+        });
+
+        const metaJSON = metaCompleta.toJSON();
+        
+        return metaJSON;
     }
     
-    async listMetas(payload, page = 1, status = null) {
+    async listMetas(payload, page = 1, status = null, sortField = 'createdAt', sortOrder = 'DESC') {
         const user = await ObjectUtils.extractUserFromPayload(payload);
 
         const { metas, total, concluidas, totalPages } =
-            await metaRepository.listMetasByUser(user.id, page, 10, status);
+            await metaRepository.listMetasByUser(user.id, page, 10, status, sortField, sortOrder);
 
         const metasWithProgress = metas.map(meta => {
             const tarefas = meta.tarefas ?? [];

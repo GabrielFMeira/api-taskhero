@@ -67,7 +67,11 @@ const concludeMeta = async (req, res) => {
 async function listMetas(req, res) {
     try {
         const page = parseInt(req.query.page) || 1;
-        const metasData = await metaService.listMetas(req.user, page);
+        const status = req.query.status || null;
+        const sortField = req.query.sortField || 'createdAt';
+        const sortOrder = req.query.sortOrder || 'DESC';
+        
+        const metasData = await metaService.listMetas(req.user, page, status, sortField, sortOrder);
 
         return res.status(200).json({
             data: metasData
