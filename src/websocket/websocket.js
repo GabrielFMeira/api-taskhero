@@ -31,6 +31,7 @@ export function setupWebSocket(server) {
 }
 
 export function sendToUser(userId, data) {
+    console.log(`Enviando mensagem através do socket: ${JSON.stringify(data)}`);
     const ws = clients.get(userId);
     if (ws && ws.readyState === ws.OPEN) {
         ws.send(JSON.stringify(data));

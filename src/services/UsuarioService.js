@@ -124,7 +124,7 @@ export default class UsuarioService {
 
     async verifyMetaAchievement(updatedUser) {
         const user = await this.#findUserByEmail(updatedUser.email);
-        recompensaService.verifyMetaAchievements(user);
+        recompensaService.verifyAchievements(user);
     }
 
     async verifyTarefaAchievement(updatedUser) {
