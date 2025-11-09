@@ -34,10 +34,11 @@ async function start() {
     console.log('Tabelas sincronizadas');
 
     server.listen(8080, () => {
-      console.log('Servidor rodando na porta 8080');
+      console.log('🚀 Servidor rodando na porta 8080');
+      console.log('📡 Aguardando requisições...');
     });
   } catch (err) {
-    console.error('Erro ao iniciar aplicação:', err);
+    console.error('❌ Erro ao iniciar aplicação:', err);
   }
 }
 

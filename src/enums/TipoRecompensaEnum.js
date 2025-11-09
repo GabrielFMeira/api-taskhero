@@ -1,6 +1,6 @@
 const TipoRecompensaEnum = Object.freeze({
     EMBLEMA: 'EMBLEMA',
-    LOGOTIPO: 'LOGOTIPO'
+    AVATAR: 'AVATAR'
 });
 
 export default TipoRecompensaEnum;

@@ -42,6 +42,11 @@ Usuario.init({
   task_coins: {
     type: DataTypes.INTEGER,
     defaultValue: 0
+  },
+  selected_avatar_id: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    defaultValue: null
   }
 }, {
   sequelize: seq,

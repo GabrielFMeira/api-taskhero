@@ -22,7 +22,7 @@ export default class TarefaService{
         return createdTasks;
     }
 
-    async updateTarefa(tarefaId, metaId, updateTaskDTO) {
+    async updateTarefa(tarefaId, metaId, updateTaskDTO, payload) {
         const tarefa = await Tarefa.findOne({
             where: {
               id: tarefaId,
@@ -34,15 +34,21 @@ export default class TarefaService{
          throw new Error(`Tarefa não encontrada para o id ${tarefaId}`);
         }
 
+        const statusAnterior = tarefa.status;
+
         tarefa.titulo = updateTaskDTO.titulo ?? tarefa.titulo;
         tarefa.prioridade = updateTaskDTO.prioridade ?? tarefa.prioridade;
         
-        // Se o status for explicitamente passado, atualiza (permite voltar para PENDENTE)
         if (updateTaskDTO.status !== undefined) {
             tarefa.status = updateTaskDTO.status;
         }
 
         await tarefa.save();
+
+        if (statusAnterior === StatusEnum.CONCLUIDO && tarefa.status === StatusEnum.PENDENTE && payload) {
+            const user = await ObjectUtils.extractUserFromPayload(payload);
+            await usuarioService.removeCoinsForUncompletedTarefa(user);
+        }
 
         return tarefa;
     }

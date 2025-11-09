@@ -14,16 +14,29 @@ export function setupWebSocket(server) {
             return;
         }
 
-        clients.set(userId, ws);
-        console.log(`Usuário ${userId} conectado`);
+        // Converter para string para garantir consistência
+        const userIdString = String(userId);
+        
+        // Fechar conexão anterior se existir
+        const existingWs = clients.get(userIdString);
+        if (existingWs && existingWs.readyState === existingWs.OPEN) {
+            existingWs.close();
+        }
+
+        clients.set(userIdString, ws);
+        console.log(`Usuário ${userIdString} conectado`);
 
         ws.on('message', (message) => {
-            console.log(`Mensagem de ${userId}:`, message.toString());
+            console.log(`Mensagem de ${userIdString}:`, message.toString());
         });
 
         ws.on('close', () => {
-            clients.delete(userId);
-            console.log(`Usuário ${userId} desconectado`);
+            clients.delete(userIdString);
+            console.log(`Usuário ${userIdString} desconectado`);
+        });
+
+        ws.on('error', (error) => {
+            console.error(`Erro no WebSocket do usuário ${userIdString}:`, error.message);
         });
     });
 
@@ -31,12 +44,12 @@ export function setupWebSocket(server) {
 }
 
 export function sendToUser(userId, data) {
-    console.log(`Enviando mensagem através do socket: ${JSON.stringify(data)}`);
-    const ws = clients.get(userId);
+    // Converter userId para string para consistência
+    const userIdString = String(userId);
+    
+    const ws = clients.get(userIdString);
+    
     if (ws && ws.readyState === ws.OPEN) {
         ws.send(JSON.stringify(data));
-        console.log(`Mensagem enviada para ${userId}`);
-    } else {
-        console.log(`Usuário ${userId} não está conectado`);
     }
 }

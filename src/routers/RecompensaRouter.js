@@ -5,6 +5,7 @@ import {validateToken} from "../middlewares/Auth.js";
 const routes = express.Router();
 
 routes.use(validateToken);
-routes.put('/buy/:recompensaId', RecompensaController.compraLogotipo);
+routes.put('/buy/:recompensaId', RecompensaController.compraAvatar);
+routes.get('/list', RecompensaController.listarRecompensas);
 
 export default routes;

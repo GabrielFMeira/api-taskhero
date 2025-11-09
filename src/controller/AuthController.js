@@ -60,9 +60,51 @@ async function updateProfile(req, res) {
     }
 }
 
+async function getUserStats(req, res) {
+    try {
+        const userId = req.user.id;
+        const stats = await usuarioService.getUserStats(userId);
+        return res.status(200).json({
+            data: stats
+        });
+    } catch (err) {
+        res.status(500).json({
+            status: 500,
+            message: err.message
+        });
+    }
+}
+
+async function selectAvatar(req, res) {
+    try {
+        const userId = req.user.id;
+        const { avatarId } = req.body;
+        
+        if (!avatarId) {
+            return res.status(400).json({
+                status: 400,
+                message: 'avatarId é obrigatório'
+            });
+        }
+
+        const result = await usuarioService.selectAvatar(userId, avatarId);
+        return res.status(200).json({
+            data: result,
+            message: 'Avatar selecionado com sucesso!'
+        });
+    } catch (err) {
+        res.status(400).json({
+            status: 400,
+            message: err.message
+        });
+    }
+}
+
 export default {
     register,
     login,
     resetPassword,
-    updateProfile
+    updateProfile,
+    getUserStats,
+    selectAvatar
 };

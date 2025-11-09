@@ -23,10 +23,28 @@ export default class UsuarioRepository {
 
         if (affectedCount === 0) return null;
 
-        if (affectedRows && affectedRows.length) {
-            return affectedRows[0];
+        const updatedUser = affectedRows && affectedRows.length 
+            ? affectedRows[0] 
+            : await Usuario.findByPk(userId);
+
+        let currentLevel = 1;
+        let xpNeeded = 100;
+        let remainingXP = updatedUser.xp_points;
+
+        while (remainingXP >= xpNeeded) {
+            remainingXP -= xpNeeded;
+            currentLevel++;
+            xpNeeded = 100 * currentLevel;
         }
 
-        return await Usuario.findByPk(userId);
+        if (currentLevel !== updatedUser.level) {
+            await Usuario.update(
+                { level: currentLevel },
+                { where: { id: userId } }
+            );
+            updatedUser.level = currentLevel;
+        }
+
+        return updatedUser;
     }
 }
