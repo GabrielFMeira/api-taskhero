@@ -55,7 +55,18 @@ export default class UsuarioService {
                 { image_id: '10', tipo: 'AVATAR', name: 'Batman', preco: 1000, minimum_level: 1 },
             ];
 
-            await Recompensa.bulkCreate(avatares);
+            const emblemas = [
+                { image_id: 'first_goal', tipo: 'EMBLEMA', name: 'Primeira Meta', description: 'Crie sua primeira meta', icon: 'flag.fill', preco: 0, minimum_level: 1 },
+                { image_id: 'goal_master', tipo: 'EMBLEMA', name: 'Mestre das Metas', description: 'Complete uma meta inteira', icon: 'star.fill', preco: 0, minimum_level: 1 },
+                { image_id: 'task_warrior', tipo: 'EMBLEMA', name: 'Guerreiro de Tarefas', description: 'Complete 10 tarefas', icon: 'checkmark.seal.fill', preco: 0, minimum_level: 1 },
+                { image_id: 'task_champion', tipo: 'EMBLEMA', name: 'Campeão das Tarefas', description: 'Complete 50 tarefas', icon: 'bolt.fill', preco: 0, minimum_level: 1 },
+                { image_id: 'level_5', tipo: 'EMBLEMA', name: 'Ascendente', description: 'Alcance o nível 5', icon: 'arrow.up.circle.fill', preco: 0, minimum_level: 5 },
+                { image_id: 'level_10', tipo: 'EMBLEMA', name: 'Lendário', description: 'Alcance o nível 10', icon: 'crown.fill', preco: 0, minimum_level: 10 },
+                { image_id: 'early_bird', tipo: 'EMBLEMA', name: 'Madrugador', description: 'Complete uma tarefa antes das 8h', icon: 'sunrise.fill', preco: 0, minimum_level: 1 },
+                { image_id: 'night_owl', tipo: 'EMBLEMA', name: 'Coruja Noturna', description: 'Complete uma tarefa após as 22h', icon: 'moon.stars.fill', preco: 0, minimum_level: 1 },
+            ];
+
+            await Recompensa.bulkCreate([...avatares, ...emblemas]);
         }
     }
 
@@ -246,6 +257,74 @@ export default class UsuarioService {
             throw new Error('Usuário não encontrado');
         }
         return await usuario.getRecompensas();
+    }
+
+    async getUserEmblemas(usuarioId) {
+        const usuario = await Usuario.findByPk(usuarioId, {
+            include: [{
+                model: Recompensa,
+                as: 'recompensas',
+                through: {
+                    attributes: ['createdAt']
+                }
+            }]
+        });
+
+        if (!usuario) {
+            throw new Error('Usuário não encontrado');
+        }
+
+        // Buscar todos os emblemas disponíveis
+        const todosEmblemas = await Recompensa.findAll({
+            where: { tipo: 'EMBLEMA' }
+        });
+        
+        // Mapear para incluir status de desbloqueio
+        return todosEmblemas.map(emblema => {
+            const emblemaDesbloqueado = usuario.recompensas.find(r => r.id === emblema.id);
+            
+            return {
+                id: emblema.image_id,
+                title: emblema.name,
+                description: emblema.description || emblema.name,
+                icon: emblema.icon || 'trophy.fill',
+                requirement: emblema.description || `Desbloqueie ${emblema.name}`,
+                category: 'special',
+                unlocked: !!emblemaDesbloqueado,
+                unlockedAt: emblemaDesbloqueado?.usuario_recompensa?.createdAt || null
+            };
+        });
+    }
+
+    async getUserEmblemasDesbloqueados(usuarioId) {
+        const usuario = await Usuario.findByPk(usuarioId, {
+            include: [{
+                model: Recompensa,
+                as: 'recompensas',
+                where: { tipo: 'EMBLEMA' },
+                required: false,
+                through: {
+                    attributes: ['createdAt']
+                }
+            }]
+        });
+
+        if (!usuario) {
+            throw new Error('Usuário não encontrado');
+        }
+
+        return usuario.recompensas
+            .filter(r => r.tipo === 'EMBLEMA')
+            .map(emblema => ({
+                id: emblema.image_id,
+                title: emblema.name,
+                description: emblema.description || emblema.name,
+                icon: emblema.icon || 'trophy.fill',
+                requirement: emblema.description || `Desbloqueie ${emblema.name}`,
+                category: 'special',
+                unlocked: true,
+                unlockedAt: emblema.usuario_recompensa?.createdAt
+            }));
     }
 
     async verifyMetaAchievement(updatedUser) {

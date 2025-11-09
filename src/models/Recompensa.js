@@ -28,6 +28,14 @@ Recompensa.init({
         type: DataTypes.STRING,
         allowNull: false
     },
+    description: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    icon: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
     preco: {
         type: DataTypes.INTEGER,
         allowNull: false

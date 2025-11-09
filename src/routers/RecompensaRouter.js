@@ -7,5 +7,7 @@ const routes = express.Router();
 routes.use(validateToken);
 routes.put('/buy/:recompensaId', RecompensaController.compraAvatar);
 routes.get('/list', RecompensaController.listarRecompensas);
+routes.get('/emblemas/all', RecompensaController.listarEmblemas);
+routes.get('/emblemas/unlocked', RecompensaController.listarEmblemasDesbloqueados);
 
 export default routes;

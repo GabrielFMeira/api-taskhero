@@ -31,10 +31,9 @@ async function seedAvatares() {
     }
 
     console.log('✅ Seed de avatares concluído!');
-    process.exit(0);
   } catch (error) {
     console.error('❌ Erro ao fazer seed de avatares:', error);
-    process.exit(1);
+    throw error;
   }
 }
 

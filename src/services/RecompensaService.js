@@ -65,14 +65,27 @@ export default class RecompensaService {
     }
 
     async findRecompensaAndNotify(usuario, imageId) {
-        const recompensa = await Recompensa.findOne({ where: { image_id: imageId } });
+        const recompensa = await Recompensa.findOne({ 
+            where: { 
+                image_id: imageId,
+                tipo: 'EMBLEMA'
+            } 
+        });
         if (!recompensa) return;
 
         await usuario.addRecompensa(recompensa);
         sendToUser(usuario.id, {
+            type: 'EMBLEMA_DESBLOQUEADO',
             message: 'Você alcançou uma conquista',
             titulo: recompensa.name,
             id: recompensa.id,
+            data: {
+                id: recompensa.image_id,
+                title: recompensa.name,
+                description: recompensa.name,
+                icon: 'trophy.fill',
+                unlockedAt: new Date()
+            }
         });
     }
 }

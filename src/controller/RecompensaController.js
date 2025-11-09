@@ -32,4 +32,32 @@ const listarRecompensas = async (req, res) => {
     }
 };
 
-export default { compraAvatar, listarRecompensas };
+const listarEmblemas = async (req, res) => {
+    try {
+        const emblemas = await usuarioService.getUserEmblemas(req.user.id);
+        return res.status(200).json({
+            data: emblemas
+        });
+    } catch (err) {
+        res.status(400).json({
+            status: 400,
+            message: err.message
+        });
+    }
+};
+
+const listarEmblemasDesbloqueados = async (req, res) => {
+    try {
+        const emblemas = await usuarioService.getUserEmblemasDesbloqueados(req.user.id);
+        return res.status(200).json({
+            data: emblemas
+        });
+    } catch (err) {
+        res.status(400).json({
+            status: 400,
+            message: err.message
+        });
+    }
+};
+
+export default { compraAvatar, listarRecompensas, listarEmblemas, listarEmblemasDesbloqueados };
