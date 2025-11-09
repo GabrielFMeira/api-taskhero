@@ -4,9 +4,11 @@ import StatusEnum from '../enums/StatusEnum.js';
 import ObjectUtils from '../utils/ObjectUtils.js';
 import UsuarioService from './UsuarioService.js';
 import MetaRepository from '../repository/MetaRepository.js';
+import RecompensaService from "./RecompensaService.js";
 
 const usuarioService = new UsuarioService();
 const metaRepository = new MetaRepository();
+const recompensaService = new RecompensaService();
 
 export default class MetaService {
     async create(createMetaDTO, payload) {
@@ -19,6 +21,8 @@ export default class MetaService {
             status: StatusEnum.PENDENTE,
             usuario_id: user.id
         });
+
+        recompensaService.verifyFirstGoal(user);
         return meta;
     }
 
