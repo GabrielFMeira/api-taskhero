@@ -1,10 +1,17 @@
 import MetaService from "../services/MetaService.js";
+import { sendToUser } from '../websocket/websocket.js';
 
 const metaService = new MetaService();
 
 async function createMeta(req, res) {
     try {
         let createdMeta = await metaService.create(req.body, req.user);
+
+        sendToUser(req.user.id, {
+            type: 'STATS_UPDATE',
+            message: 'Meta criada com sucesso'
+        });
+        
         return res.status(200).json({
             data: createdMeta
         });
@@ -37,6 +44,12 @@ const deleteMeta = async (req, res) => {
     try {
         const { metaId } = req.params;
         await metaService.deleteMeta(metaId, req.user);
+
+        sendToUser(req.user.id, {
+            type: 'STATS_UPDATE',
+            message: 'Meta excluída com sucesso'
+        });
+        
         return res.status(200).json({
             data: 'Meta excluída com sucesso!'
         });
