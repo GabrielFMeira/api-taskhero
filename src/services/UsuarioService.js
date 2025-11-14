@@ -448,7 +448,7 @@ export default class UsuarioService {
                 selected_avatar_id: user.selected_avatar_id || null
             },
             process.env.JWT_SECRET,
-            { expiresIn: '4h' }
+            { expiresIn: '30d' }
         );
     }
 

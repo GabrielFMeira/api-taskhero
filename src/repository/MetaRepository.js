@@ -51,6 +51,14 @@ export default class MetaRepository {
             END
         `;
 
+        let statusCondition = ':status IS NULL OR m.status = :status';
+        if (status === 'CONCLUIDO') {
+
+            statusCondition = `m.status IN ('CONCLUIDO', 'CONCLUIDO_COM_ATRASO')`;
+        } else if (status) {
+            statusCondition = 'm.status = :status';
+        }
+
         const query = `
             SELECT 
                 m.id,
@@ -63,10 +71,10 @@ export default class MetaRepository {
                 m."updatedAt",
                 ${progressCalculation} as progress_calculated,
                 COUNT(*) OVER() AS total_metas,
-                SUM(CASE WHEN m.status = 'CONCLUIDO' THEN 1 ELSE 0 END) OVER() AS concluidas
+                SUM(CASE WHEN m.status IN ('CONCLUIDO', 'CONCLUIDO_COM_ATRASO') THEN 1 ELSE 0 END) OVER() AS concluidas
             FROM metas m
             WHERE m.usuario_id = :userId
-            AND (:status IS NULL OR m.status = :status)
+            AND (${statusCondition})
             ORDER BY ${field === 'progress_calculated' ? progressCalculation : `m."${field}"`} ${order}
             LIMIT :limit OFFSET :offset;
         `;
