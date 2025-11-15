@@ -385,7 +385,6 @@ Projeto desenvolvido como parte do trabalho acadêmico A3 - 2025.
 
 - **Frontend**: TaskHero App
 - **Repositório**: [Aplicativo](https://github.com/GustavoSilles/app-taskhero)
-- 
 - **Worker**: Sistema Notificador
 - **Repositório**: [Notificador](https://github.com/GabrielFMeira/notificator-taskhero)
 
