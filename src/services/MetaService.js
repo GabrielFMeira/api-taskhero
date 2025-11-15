@@ -5,6 +5,7 @@ import ObjectUtils from '../utils/ObjectUtils.js';
 import UsuarioService from './UsuarioService.js';
 import MetaRepository from '../repository/MetaRepository.js';
 import RecompensaService from "./RecompensaService.js";
+import {sendToUser} from "../websocket/websocket.js";
 
 const usuarioService = new UsuarioService();
 const metaRepository = new MetaRepository();
@@ -187,5 +188,19 @@ export default class MetaService {
             : 0;
 
         return { ...metaJSON, progresso };
+    }
+
+    async notificateExpiredMetas() {
+        const idsExpirados = await metaRepository.markMetasAsExpired();
+
+        idsExpirados.forEach((metaIds, userId) => {
+            metaIds.forEach(metaId => {
+                sendToUser(userId, {
+                    type: 'META_EXPIRADA',
+                    message: `Meta com id ${metaId} expirada`,
+                    meta_id: metaId
+                });
+            });
+        });
     }
 }

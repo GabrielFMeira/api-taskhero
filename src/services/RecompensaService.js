@@ -55,7 +55,11 @@ export default class RecompensaService {
     }
 
     async verifyHourAchievement(usuario, recompensas) {
-        const currentHour = new Date().getHours();
+        const currentHour = parseInt(new Date().toLocaleString('pt-BR', {
+            timeZone: 'America/Sao_Paulo',
+            hour: 'numeric',
+            hour12: false
+        }));
 
         if (currentHour < 8 && !recompensas.some(r => r.image_id === 'early_bird')) {
             await this.findRecompensaAndNotify(usuario, 'early_bird');

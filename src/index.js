@@ -4,6 +4,7 @@ import db from './models/index.js';
 import dotenv from 'dotenv';
 import http from 'http';
 import {setupWebSocket} from './websocket/websocket.js';
+import './schedules/schedules.js'
 
 dotenv.config();
 const api = express();

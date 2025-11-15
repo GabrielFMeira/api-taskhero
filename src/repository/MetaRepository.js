@@ -116,4 +116,27 @@ export default class MetaRepository {
             totalPages: Math.ceil(total / limit)
         };
     }
+
+    async markMetasAsExpired() {
+        const metasExpiradasMap = new Map();
+
+        const [results] = await seq.query(
+            `
+            update metas m
+            set status = 'EXPIRADO'::enum_metas_status
+            where m.data_fim < current_timestamp
+            and status <> 'EXPIRADO'
+            RETURNING id, usuario_id
+            `
+        )
+
+        results.forEach(r => {
+            if (!metasExpiradasMap.has(r.usuario_id)) {
+                metasExpiradasMap.set(r.usuario_id, []);
+            }
+            metasExpiradasMap.get(r.usuario_id).push(r.id);
+        });
+
+        return metasExpiradasMap;
+    }
 }
