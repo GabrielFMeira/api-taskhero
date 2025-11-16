@@ -254,7 +254,7 @@ xpProximoNivel = 100 * nivelAtual
 | Flash | 350 |
 | Aranha Venom | 350 |
 | Homem-Aranha | 400 |
-| Aranha Preto | 400 |
+| Miles Morales | 400 |
 | Kratos | 500 |
 | Demolidor | 1000 |
 | Batman | 1000 |
