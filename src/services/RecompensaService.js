@@ -70,8 +70,7 @@ export default class RecompensaService {
 
         if (currentHour < 8 && !recompensas.some(r => r.image_id === 'early_bird')) {
             await this.findRecompensaAndNotify(usuario, 'early_bird');
-        }
-        if (currentHour > 22 && !recompensas.some(r => r.image_id === 'night_owl')) {
+        } else if (currentHour > 22 && !recompensas.some(r => r.image_id === 'night_owl')) {
             await this.findRecompensaAndNotify(usuario, 'night_owl');
         }
     }
