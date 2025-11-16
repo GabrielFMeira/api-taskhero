@@ -16,7 +16,10 @@ export default class RecompensaService {
 
     async checkMetaMaster(usuario, metas, recompensas) {
         const temRecompensa = recompensas.some(r => r.image_id === 'goal_master');
-        if (metas.length === 1 && !temRecompensa) {
+        const metasConcluidas = metas.filter(m => 
+            m.status === 'CONCLUIDO' || m.status === 'CONCLUIDO_COM_ATRASO'
+        );
+        if (metasConcluidas.length >= 1 && !temRecompensa) {
             await this.findRecompensaAndNotify(usuario, 'goal_master');
         }
     }
@@ -27,9 +30,12 @@ export default class RecompensaService {
         const tarefas = await Tarefa.findAll({ where: { meta_id: { [Op.in] : metasIds } } });
         const recompensas = await usuario.getRecompensas();
 
-        if (tarefas.length >= 10 && tarefas.length < 50 && !recompensas.some(r => r.image_id === 'task_warrior')) {
+        const tarefasConcluidas = tarefas.filter(t => t.status === 'CONCLUIDO');
+
+        if (tarefasConcluidas.length >= 10 && tarefasConcluidas.length < 50 && !recompensas.some(r => r.image_id === 'task_warrior')) {
             await this.findRecompensaAndNotify(usuario, 'task_warrior');
-        } else if (tarefas.length >= 50 && !recompensas.some(r => r.image_id === 'task_champion')) {
+        }
+        if (tarefasConcluidas.length >= 50 && !recompensas.some(r => r.image_id === 'task_champion')) {
             await this.findRecompensaAndNotify(usuario, 'task_champion');
         }
 
@@ -41,15 +47,16 @@ export default class RecompensaService {
         const usuario = await Usuario.findByPk(user.id);
         const metas = await Meta.findAll({ where: {usuario_id: usuario.id} });
         const recompensas = await usuario.getRecompensas();
-        if (metas.length === 1 && !recompensas.some(r => r.image_id === 'first_goal')) {
+        if (metas.length >= 1 && !recompensas.some(r => r.image_id === 'first_goal')) {
             await this.findRecompensaAndNotify(usuario, 'first_goal');
         }
     }
 
     async verifyLevelAchievement(usuario, recompensas) {
-        if (usuario.level >= 10 && !recompensas.some(r => r.image_id === 'level_5')) {
+        if (usuario.level >= 5 && !recompensas.some(r => r.image_id === 'level_5')) {
             await this.findRecompensaAndNotify(usuario, 'level_5');
-        } else if (usuario.level >= 10 && !recompensas.some(r => r.image_id === 'level_10')) {
+        }
+        if (usuario.level >= 10 && !recompensas.some(r => r.image_id === 'level_10')) {
             await this.findRecompensaAndNotify(usuario, 'level_10');
         }
     }
@@ -63,8 +70,9 @@ export default class RecompensaService {
 
         if (currentHour < 8 && !recompensas.some(r => r.image_id === 'early_bird')) {
             await this.findRecompensaAndNotify(usuario, 'early_bird');
-        } else if (currentHour > 22 && !recompensas.some(r => r.image_id === 'night_owl')) {
-            await this.findRecompensaAndNotify(usuario, 'night_owl')
+        }
+        if (currentHour > 22 && !recompensas.some(r => r.image_id === 'night_owl')) {
+            await this.findRecompensaAndNotify(usuario, 'night_owl');
         }
     }
 
