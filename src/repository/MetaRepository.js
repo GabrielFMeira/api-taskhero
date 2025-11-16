@@ -125,7 +125,7 @@ export default class MetaRepository {
             update metas m
             set status = 'EXPIRADO'::enum_metas_status
             where m.data_fim < current_timestamp
-            and status <> 'EXPIRADO'
+            and status not in ('EXPIRADO', 'CONCLUIDO', 'CONCLUIDO_COM_ATRASO')
             RETURNING id, usuario_id
             `
         )
